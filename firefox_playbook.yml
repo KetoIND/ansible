@@ -1,0 +1,33 @@
+--- 
+- name: Firefox setup
+  hosts: all
+  remote_user: ubuntu
+  become: true
+  become_user: root
+  become_method: sudo
+  gather_facts: true
+  vars:
+    ansible_ssh_private_key_file: /home/ranjith/DevOPs/Ansible/Keto-ec2.pem
+
+  # Tasks
+  tasks:
+    - name: Check Firefox version
+      command: "firefox --version"
+      register: firefox_check_result
+      ignore_errors: true
+
+- name: Install or Remove Mozilla Firefox
+  hosts: all
+  become: true
+  tasks:
+    - name: Remove Firefox if installed
+      ansible.builtin.package:
+        name: firefox
+        state: absent
+      when: firefox_check_result.rc == 0
+
+    - name: Install Firefox if not installed
+      ansible.builtin.package:
+        name: firefox
+        state: present
+      when: firefox_check_result.rc != 0
