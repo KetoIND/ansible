@@ -1,4 +1,5 @@
 --- 
+#playbook
 - name: Firefox setup
   hosts: all
   remote_user: ubuntu
